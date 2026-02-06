@@ -55,7 +55,7 @@ export default function FooterCTA() {
 
         {/* Follow button */}
         <a
-          href="https://twitter.com/"
+          href="https://x.com/i/communities/2019838381752996131"
           target="_blank"
           rel="noopener noreferrer"
           className="btn-follow inline-flex items-center gap-3 bg-black border-[3px] border-black text-accent-gold px-8 py-3 text-sm font-bold shadow-[4px_4px_0px_rgba(0,0,0,0.3)]"
