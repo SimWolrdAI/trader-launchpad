@@ -14,11 +14,13 @@ const pressStart = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
-  title: "The Traders | Launch Famous Traders",
+  title: "The Traders",
   description:
     "The ultimate launchpad for famous crypto traders. Launch tokens, support your favorite traders, and earn rewards.",
   icons: {
-    icon: "/main.jpg",
+    icon: [
+      { url: "/main.jpg", type: "image/jpeg" },
+    ],
     shortcut: "/main.jpg",
     apple: "/main.jpg",
   },
