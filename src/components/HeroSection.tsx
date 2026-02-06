@@ -91,7 +91,7 @@ export default function HeroSection() {
                 <div className="pixel-frame w-64 md:w-72">
                   <div className="pixel-frame-inner w-full h-56 md:h-64 bg-bg-panel flex items-center justify-center relative">
                     <Image
-                      src="/main.png"
+                      src="/main.jpg"
                       alt="Token"
                       fill
                       className="object-cover"

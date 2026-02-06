@@ -17,7 +17,7 @@ export default function Header() {
         <a href="/" className="flex items-center gap-3 group cursor-pointer">
           <div className="w-10 h-10 border-[3px] border-accent-gold shadow-[3px_3px_0px_rgba(255,217,61,0.3)] overflow-hidden transition-all duration-300 group-hover:shadow-[3px_3px_0px_rgba(255,217,61,0.5)] group-hover:rotate-[-5deg] relative">
             <Image
-              src="/main.png"
+              src="/main.jpg"
               alt="Logo"
               fill
               className="object-cover"
