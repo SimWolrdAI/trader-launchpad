@@ -1,10 +1,12 @@
 "use client";
 
-import { traders } from "@/data/traders";
+import { useTraders } from "@/hooks/useTraders";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function TraderGrid() {
+  const { traders } = useTraders();
+
   return (
     <section id="traders" className="max-w-7xl mx-auto px-4 py-10">
       {/* Meet The Traders Header */}

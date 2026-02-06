@@ -1,10 +1,12 @@
 "use client";
 
-import { traders } from "@/data/traders";
+import { useTraders } from "@/hooks/useTraders";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function TraderScroll() {
+  const { traders } = useTraders();
+
   return (
     <section className="max-w-7xl mx-auto px-4 py-6">
       <div className="section-panel pixel-border-gold bg-accent-gold/5 p-4">

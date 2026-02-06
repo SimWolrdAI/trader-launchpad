@@ -3,7 +3,7 @@
 import { traders } from "@/data/traders";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function CopyButton({ text, label }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
@@ -52,6 +52,24 @@ export default function TraderPage() {
       </div>
     );
   }
+
+  // Fetch dynamic data from Redis
+  const [dynamicData, setDynamicData] = useState<{
+    deployed: boolean;
+    contractAddress?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/traders/${traderId}`)
+      .then((res) => res.json())
+      .then((data) => setDynamicData(data))
+      .catch(() => {});
+  }, [traderId]);
+
+  // Merge static + dynamic
+  const isDeployed = dynamicData?.deployed ?? trader.deployed;
+  const contractAddress =
+    dynamicData?.contractAddress || trader.contractAddress;
 
   // Extract twitter username from URL
   const twitterUsername = trader.twitterUrl.split("/").pop() || "";
@@ -102,7 +120,7 @@ export default function TraderPage() {
               {/* Trader image */}
               <div className="pixel-border-gold bg-bg-card p-4 relative">
                 {/* Deployed badge */}
-                {trader.deployed && (
+                {isDeployed && (
                   <div className="absolute top-6 right-6 z-10 pixel-icon-box !w-auto !px-3 !h-8 text-xs font-black">
                     DEPLOYED
                   </div>
@@ -323,23 +341,23 @@ export default function TraderPage() {
                     >
                       CA
                     </p>
-                    {trader.contractAddress ? (
+                    {contractAddress ? (
                       <p className="text-white text-sm font-mono break-all">
-                        {trader.contractAddress}
+                        {contractAddress}
                       </p>
                     ) : (
                       <p className="text-text-muted text-sm">Not deployed</p>
                     )}
                   </div>
-                  {trader.contractAddress && (
-                    <CopyButton text={trader.contractAddress} label="Copy CA" />
+                  {contractAddress && (
+                    <CopyButton text={contractAddress} label="Copy CA" />
                   )}
                 </div>
 
                 {/* VIEW ON PUMP.FUN — only when deployed */}
-                {trader.deployed && trader.contractAddress ? (
+                {isDeployed && contractAddress ? (
                   <a
-                    href={`https://pump.fun/coin/${trader.contractAddress}`}
+                    href={`https://pump.fun/coin/${contractAddress}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cta-banner block bg-accent-gold pixel-border-gold p-4 text-center"

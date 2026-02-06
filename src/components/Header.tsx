@@ -1,11 +1,10 @@
 "use client";
 
-import { getDeployedCount, getRemainingCount } from "@/data/traders";
+import { useTraders } from "@/hooks/useTraders";
 import Image from "next/image";
 
 export default function Header() {
-  const deployed = getDeployedCount();
-  const remaining = getRemainingCount();
+  const { deployedCount: deployed, remainingCount: remaining } = useTraders();
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
