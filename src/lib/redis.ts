@@ -1,9 +1,4 @@
-import { Redis } from "@upstash/redis";
-
-export const redis = new Redis({
-  url: process.env.KV_REST_API_URL || "",
-  token: process.env.KV_REST_API_TOKEN || "",
-});
+import { kv } from "@vercel/kv";
 
 export interface TraderDynamic {
   deployed: boolean;
@@ -14,32 +9,35 @@ export interface TraderDynamic {
 export async function getTraderDynamic(
   traderId: number
 ): Promise<TraderDynamic | null> {
-  const data = await redis.get<TraderDynamic>(`trader:${traderId}`);
-  return data;
+  try {
+    const data = await kv.get<TraderDynamic>(`trader:${traderId}`);
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 // Get dynamic data for all traders
 export async function getAllTradersDynamic(): Promise<
   Record<number, TraderDynamic>
 > {
-  const keys = await redis.keys("trader:*");
-  if (keys.length === 0) return {};
+  try {
+    const keys = await kv.keys("trader:*");
+    if (keys.length === 0) return {};
 
-  const pipeline = redis.pipeline();
-  for (const key of keys) {
-    pipeline.get(key);
-  }
-  const results = await pipeline.exec<(TraderDynamic | null)[]>();
-
-  const map: Record<number, TraderDynamic> = {};
-  keys.forEach((key, i) => {
-    const id = parseInt(key.replace("trader:", ""));
-    if (results[i]) {
-      map[id] = results[i]!;
+    const map: Record<number, TraderDynamic> = {};
+    for (const key of keys) {
+      const id = parseInt(key.replace("trader:", ""));
+      const data = await kv.get<TraderDynamic>(key);
+      if (data) {
+        map[id] = data;
+      }
     }
-  });
 
-  return map;
+    return map;
+  } catch {
+    return {};
+  }
 }
 
 // Set dynamic data for a trader
@@ -47,6 +45,6 @@ export async function setTraderDynamic(
   traderId: number,
   data: TraderDynamic
 ): Promise<void> {
-  await redis.set(`trader:${traderId}`, data);
+  await kv.set(`trader:${traderId}`, data);
 }
 
