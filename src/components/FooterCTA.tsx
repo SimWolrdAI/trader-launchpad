@@ -1,72 +1,69 @@
+"use client";
+
+
 export default function FooterCTA() {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-10 pb-16">
-      <div className="section-panel pixel-border-gold bg-accent-gold p-8 md:p-12 text-center relative overflow-hidden">
-        {/* Decorative pixel dots */}
-        <div className="absolute top-4 left-4 flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 bg-black/30 border border-black/30" />
-          <div className="w-2.5 h-2.5 bg-black/20 border border-black/20" />
-          <div className="w-2.5 h-2.5 bg-black/10 border border-black/10" />
+    <footer className="max-w-7xl mx-auto px-5 pt-6 pb-14">
+      {/* CTA Banner */}
+      <div className="gold-banner p-8 md:p-12 mb-12">
+        <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
+          {/* Left */}
+          <div className="flex-1 text-center md:text-left">
+            <p className="text-[#1a1000]/50 text-[10px] tracking-[0.3em] uppercase font-semibold mb-2">
+              Ready to Explore?
+            </p>
+            <h3
+              className="text-[#1a1000] text-xl md:text-2xl mb-2"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Join The Animals Today
+            </h3>
+            <p className="text-[#1a1000]/60 text-sm leading-relaxed max-w-md">
+              Be the first to deploy a creature and claim your spot in the exhibit hall forever.
+            </p>
+          </div>
+
+          {/* Right */}
+          <div className="flex gap-3">
+            <button
+              className="bg-[#1a1000] text-accent-gold font-bold px-7 py-3 rounded-xl transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg text-sm"
+              onClick={() => {
+                const el = document.getElementById("animals");
+                el?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              🔥 Explore Now
+            </button>
+            <a
+              href="https://x.com/i/communities/2021252505582141541/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white/20 backdrop-blur-sm text-[#1a1000] font-semibold px-7 py-3 rounded-xl border border-white/30 transition-all duration-200 hover:bg-white/30 hover:translate-y-[-2px] text-sm"
+            >
+              𝕏 Follow Us
+            </a>
+          </div>
         </div>
-        <div className="absolute top-4 right-4 flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 bg-black/10 border border-black/10" />
-          <div className="w-2.5 h-2.5 bg-black/20 border border-black/20" />
-          <div className="w-2.5 h-2.5 bg-black/30 border border-black/30" />
-        </div>
-
-        {/* Pixel icon */}
-        <div
-          className="mx-auto !w-16 !h-16 mb-6 flex items-center justify-center flex-shrink-0"
-          style={{
-            background: "#000",
-            border: "3px solid #000",
-            boxShadow: "3px 3px 0px rgba(0,0,0,0.3)",
-            imageRendering: "pixelated",
-          }}
-        >
-          <svg viewBox="0 0 16 16" fill="var(--accent-gold)" className="w-8 h-8" shapeRendering="crispEdges">
-            <rect x="7" y="0" width="2" height="2" />
-            <rect x="7" y="2" width="2" height="2" />
-            <rect x="0" y="5" width="16" height="2" />
-            <rect x="2" y="7" width="12" height="2" />
-            <rect x="3" y="9" width="4" height="2" />
-            <rect x="9" y="9" width="4" height="2" />
-            <rect x="2" y="11" width="2" height="2" />
-            <rect x="12" y="11" width="2" height="2" />
-            <rect x="1" y="13" width="2" height="2" />
-            <rect x="13" y="13" width="2" height="2" />
-          </svg>
-        </div>
-
-        {/* Title */}
-        <h3
-          className="text-xl md:text-2xl text-black font-bold mb-4"
-          style={{ fontFamily: "var(--font-pixel)" }}
-        >
-          New Traders Weekly!
-        </h3>
-
-        {/* Description */}
-        <p className="text-black/60 text-base md:text-lg max-w-md mx-auto mb-6">
-          We release 15-20 new trader designs every week.
-          <br />
-          Follow us to catch them first!
-        </p>
-
-        {/* Follow button */}
-        <a
-          href="https://x.com/i/communities/2019838381752996131"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-follow inline-flex items-center gap-3 bg-black border-[3px] border-black text-accent-gold px-8 py-3 text-sm font-bold shadow-[4px_4px_0px_rgba(0,0,0,0.3)]"
-          style={{ fontFamily: "var(--font-pixel)" }}
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
-          FOLLOW ON X
-        </a>
       </div>
-    </section>
+
+      {/* Footer bottom */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-2">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg overflow-hidden">
+            <img src="/icon.jpg" alt="The Animals" className="w-full h-full object-cover" />
+          </div>
+          <p className="text-text-secondary text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-display)" }}>
+            The Animals
+          </p>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <a href="#about" className="text-text-muted text-xs transition-colors hover:text-accent-gold">About</a>
+          <a href="#animals" className="text-text-muted text-xs transition-colors hover:text-accent-gold">Collection</a>
+          <a href="#guide" className="text-text-muted text-xs transition-colors hover:text-accent-gold">Guide</a>
+        </div>
+
+      </div>
+    </footer>
   );
 }

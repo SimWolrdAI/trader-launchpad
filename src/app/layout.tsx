@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Press_Start_2P } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -7,22 +7,19 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const pressStart = Press_Start_2P({
-  weight: "400",
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-pixel",
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
-  title: "The Traders",
+  title: "The animals",
   description:
-    "The ultimate launchpad for famous crypto traders. Launch tokens, support your favorite traders, and earn rewards.",
+    "A premium animal-themed token launchpad. Deploy legendary creatures on-chain.",
   icons: {
-    icon: [
-      { url: "/main.jpg", type: "image/jpeg" },
-    ],
-    shortcut: "/main.jpg",
-    apple: "/main.jpg",
+    icon: [{ url: "/icon.jpg", type: "image/jpeg" }],
+    shortcut: "/icon.jpg",
+    apple: "/icon.jpg",
   },
 };
 
@@ -33,7 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${pressStart.variable} antialiased`}>
+      <body
+        className={`${inter.variable} ${playfair.variable} antialiased`}
+      >
         {children}
       </body>
     </html>

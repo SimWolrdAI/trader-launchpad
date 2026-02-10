@@ -1,7 +1,6 @@
 "use client";
 
-import { traders } from "@/data/traders";
-import Image from "next/image";
+import { animals } from "@/data/animals";
 import { useCallback, useEffect, useState } from "react";
 
 interface DynamicData {
@@ -24,12 +23,11 @@ export default function AdminPage() {
       const data = await res.json();
       setDynamicMap(data);
     } catch {
-      // Redis not configured - use static data
       const staticMap: Record<number, DynamicData> = {};
-      traders.forEach((t) => {
-        staticMap[t.id] = {
-          deployed: t.deployed,
-          contractAddress: t.contractAddress,
+      animals.forEach((a) => {
+        staticMap[a.id] = {
+          deployed: a.deployed,
+          contractAddress: a.contractAddress,
         };
       });
       setDynamicMap(staticMap);
@@ -37,9 +35,7 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (authenticated) {
-      fetchData();
-    }
+    if (authenticated) fetchData();
   }, [authenticated, fetchData]);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -48,34 +44,25 @@ export default function AdminPage() {
     fetchData();
   };
 
-  const toggleDeployed = async (traderId: number) => {
-    const current = dynamicMap[traderId];
+  const toggleDeployed = async (id: number) => {
+    const current = dynamicMap[id];
     const newDeployed = !current?.deployed;
-    const ca = editingCA[traderId] || current?.contractAddress || "";
+    const ca = editingCA[id] || current?.contractAddress || "";
 
-    setSaving(traderId);
+    setSaving(id);
     try {
-      const res = await fetch(`/api/traders/${traderId}`, {
+      const res = await fetch(`/api/traders/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password,
-          deployed: newDeployed,
-          contractAddress: ca,
-        }),
+        body: JSON.stringify({ password, deployed: newDeployed, contractAddress: ca }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         setMessage(`Error: ${data.error}`);
         return;
       }
-
-      setDynamicMap((prev) => ({
-        ...prev,
-        [traderId]: { deployed: newDeployed, contractAddress: ca },
-      }));
-      setMessage(`${traders.find((t) => t.id === traderId)?.name} updated!`);
+      setDynamicMap((prev) => ({ ...prev, [id]: { deployed: newDeployed, contractAddress: ca } }));
+      setMessage(`${animals.find((a) => a.id === id)?.name} updated!`);
     } catch (err) {
       setMessage(`Error: ${String(err)}`);
     } finally {
@@ -84,33 +71,24 @@ export default function AdminPage() {
     }
   };
 
-  const saveCA = async (traderId: number) => {
-    const current = dynamicMap[traderId];
-    const ca = editingCA[traderId] ?? current?.contractAddress ?? "";
+  const saveCA = async (id: number) => {
+    const current = dynamicMap[id];
+    const ca = editingCA[id] ?? current?.contractAddress ?? "";
 
-    setSaving(traderId);
+    setSaving(id);
     try {
-      const res = await fetch(`/api/traders/${traderId}`, {
+      const res = await fetch(`/api/traders/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password,
-          deployed: current?.deployed ?? false,
-          contractAddress: ca,
-        }),
+        body: JSON.stringify({ password, deployed: current?.deployed ?? false, contractAddress: ca }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         setMessage(`Error: ${data.error}`);
         return;
       }
-
-      setDynamicMap((prev) => ({
-        ...prev,
-        [traderId]: { ...prev[traderId], contractAddress: ca },
-      }));
-      setMessage(`CA saved for ${traders.find((t) => t.id === traderId)?.name}!`);
+      setDynamicMap((prev) => ({ ...prev, [id]: { ...prev[id], contractAddress: ca } }));
+      setMessage(`CA saved for ${animals.find((a) => a.id === id)?.name}!`);
     } catch (err) {
       setMessage(`Error: ${String(err)}`);
     } finally {
@@ -119,71 +97,53 @@ export default function AdminPage() {
     }
   };
 
-  // Login screen
+  // Login
   if (!authenticated) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
-        <form
-          onSubmit={handleLogin}
-          className="pixel-border bg-bg-panel p-8 w-full max-w-md space-y-6"
-        >
+      <div className="min-h-screen bg-bg-main flex items-center justify-center p-4">
+        <form onSubmit={handleLogin} className="zoo-panel p-8 w-full max-w-md space-y-6">
           <h1
-            className="text-2xl text-accent-gold font-bold text-center"
-            style={{ fontFamily: "var(--font-pixel)" }}
+            className="text-2xl text-accent-gold text-center"
+            style={{ fontFamily: "var(--font-display)" }}
           >
-            🔒 ADMIN PANEL
+            🔒 Zookeeper Panel
           </h1>
           <div>
-            <label className="text-text-muted text-xs block mb-2">
-              Password
-            </label>
+            <label className="text-text-muted text-xs block mb-2 tracking-wider uppercase">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-bg-card border-2 border-border-main text-white px-4 py-3 text-sm focus:border-accent-gold outline-none"
-              placeholder="Enter admin password..."
+              className="w-full bg-bg-card border border-border-main rounded-xl text-text-primary px-4 py-3 text-sm focus:border-accent-gold outline-none transition-colors"
+              placeholder="Enter password..."
               autoFocus
             />
           </div>
-          <button
-            type="submit"
-            className="pixel-btn-gold w-full"
-            style={{ fontFamily: "var(--font-pixel)" }}
-          >
-            LOGIN
+          <button type="submit" className="btn-primary w-full" style={{ fontFamily: "var(--font-display)" }}>
+            Enter
           </button>
         </form>
       </div>
     );
   }
 
-  // Admin dashboard
+  // Dashboard
   return (
-    <div className="min-h-screen bg-[#0a0a0a] p-4 md:p-8">
+    <div className="min-h-screen bg-bg-main p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="pixel-border bg-bg-panel p-6 mb-6">
+        <div className="zoo-panel p-6 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <h1
-              className="text-2xl text-accent-gold font-bold"
-              style={{ fontFamily: "var(--font-pixel)" }}
-            >
-              ⚡ ADMIN PANEL
+            <h1 className="text-2xl text-accent-gold" style={{ fontFamily: "var(--font-display)" }}>
+              🦁 Zookeeper Panel
             </h1>
             <div className="flex items-center gap-4">
-              <span className="text-text-muted text-sm">
-                Traders: {traders.length} | Deployed:{" "}
-                {
-                  Object.values(dynamicMap).filter((d) => d.deployed).length
-                }
+              <span className="text-text-secondary text-sm">
+                Species: {animals.length} · Deployed: {Object.values(dynamicMap).filter((d) => d.deployed).length}
               </span>
               <button
-                onClick={() => {
-                  setAuthenticated(false);
-                  setPassword("");
-                }}
-                className="text-red-400 text-sm hover:text-red-300 border border-red-400/30 px-3 py-1"
+                onClick={() => { setAuthenticated(false); setPassword(""); }}
+                className="text-accent-red text-sm hover:text-red-300 border border-accent-red/30 px-3 py-1 rounded-lg transition-colors"
               >
                 Logout
               </button>
@@ -191,94 +151,61 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Status message */}
         {message && (
-          <div className="pixel-border-gold bg-accent-gold/10 text-accent-gold p-3 mb-4 text-center text-sm font-bold">
+          <div className="zoo-panel border-accent-gold/30 bg-accent-gold/5 text-accent-gold p-3 mb-4 text-center text-sm font-medium rounded-xl">
             {message}
           </div>
         )}
 
-        {/* Traders list */}
         <div className="space-y-3">
-          {traders.map((trader) => {
-            const dyn = dynamicMap[trader.id];
+          {animals.map((animal) => {
+            const dyn = dynamicMap[animal.id];
             const isDeployed = dyn?.deployed ?? false;
-            const ca = editingCA[trader.id] ?? dyn?.contractAddress ?? "";
-            const isSaving = saving === trader.id;
+            const ca = editingCA[animal.id] ?? dyn?.contractAddress ?? "";
+            const isSaving = saving === animal.id;
 
             return (
               <div
-                key={trader.id}
-                className={`pixel-border bg-bg-panel p-4 flex flex-col md:flex-row md:items-center gap-4 transition-all ${
-                  isDeployed ? "border-l-4 border-l-green-500" : ""
-                }`}
+                key={animal.id}
+                className={`zoo-panel p-4 flex flex-col md:flex-row md:items-center gap-4 transition-all ${isDeployed ? "border-l-4 border-l-accent-green" : ""}`}
               >
-                {/* Avatar + Info */}
                 <div className="flex items-center gap-3 min-w-0 md:w-64">
-                  <div className="w-10 h-10 flex-shrink-0 bg-bg-card border-2 border-border-main relative overflow-hidden">
-                    {trader.logo ? (
-                      <Image
-                        src={trader.logo}
-                        alt={trader.name}
-                        fill
-                        className="object-cover"
-                        sizes="40px"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-text-muted font-bold">
-                        {trader.name.charAt(0)}
-                      </div>
-                    )}
+                  <div className="w-10 h-10 flex-shrink-0 rounded-xl border border-border-main overflow-hidden relative">
+                    <img src={animal.image} alt={animal.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-white font-bold text-sm truncate">
-                      #{trader.id} {trader.name}
-                    </p>
-                    <p className="text-text-muted text-xs truncate">
-                      {trader.handle}
-                    </p>
+                    <p className="text-text-primary font-semibold text-sm truncate">#{animal.id} {animal.name}</p>
+                    <p className="text-text-muted text-xs truncate">{animal.symbol}</p>
                   </div>
                 </div>
 
-                {/* CA Input */}
                 <div className="flex-1 flex items-center gap-2">
                   <input
                     type="text"
                     value={ca}
-                    onChange={(e) =>
-                      setEditingCA((prev) => ({
-                        ...prev,
-                        [trader.id]: e.target.value,
-                      }))
-                    }
-                    className="flex-1 bg-bg-card border-2 border-border-main text-white px-3 py-2 text-xs font-mono focus:border-accent-gold outline-none"
+                    onChange={(e) => setEditingCA((prev) => ({ ...prev, [animal.id]: e.target.value }))}
+                    className="flex-1 bg-bg-card border border-border-main rounded-lg text-text-primary px-3 py-2 text-xs font-mono focus:border-accent-gold outline-none transition-colors"
                     placeholder="Contract Address..."
                   />
                   <button
-                    onClick={() => saveCA(trader.id)}
+                    onClick={() => saveCA(animal.id)}
                     disabled={isSaving}
-                    className="px-3 py-2 bg-bg-card border-2 border-border-main text-accent-gold text-xs font-bold hover:bg-accent-gold/10 transition-colors disabled:opacity-50"
+                    className="px-3 py-2 bg-bg-card border border-border-main rounded-lg text-accent-gold text-xs font-semibold hover:bg-accent-gold/10 transition-colors disabled:opacity-50"
                   >
-                    {isSaving ? "..." : "SAVE CA"}
+                    {isSaving ? "..." : "Save"}
                   </button>
                 </div>
 
-                {/* Deploy toggle */}
                 <button
-                  onClick={() => toggleDeployed(trader.id)}
+                  onClick={() => toggleDeployed(animal.id)}
                   disabled={isSaving || loading}
-                  className={`px-4 py-2 text-xs font-bold border-2 transition-all whitespace-nowrap ${
+                  className={`px-4 py-2 text-xs font-semibold border rounded-lg transition-all whitespace-nowrap tracking-wide ${
                     isDeployed
-                      ? "bg-green-500/20 border-green-500 text-green-400 hover:bg-red-500/20 hover:border-red-500 hover:text-red-400"
-                      : "bg-bg-card border-border-main text-text-muted hover:bg-green-500/20 hover:border-green-500 hover:text-green-400"
+                      ? "bg-accent-green/15 border-accent-green/40 text-accent-green-light hover:bg-accent-red/15 hover:border-accent-red/40 hover:text-accent-red"
+                      : "bg-bg-card border-border-main text-text-muted hover:bg-accent-green/15 hover:border-accent-green/40 hover:text-accent-green-light"
                   }`}
-                  style={{ fontFamily: "var(--font-pixel)" }}
                 >
-                  {isSaving
-                    ? "SAVING..."
-                    : isDeployed
-                    ? "✓ DEPLOYED"
-                    : "NOT DEPLOYED"}
+                  {isSaving ? "Saving..." : isDeployed ? "✓ Deployed" : "Not Deployed"}
                 </button>
               </div>
             );
@@ -288,4 +215,3 @@ export default function AdminPage() {
     </div>
   );
 }
-

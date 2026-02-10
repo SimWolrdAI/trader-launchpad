@@ -1,69 +1,52 @@
 "use client";
 
-import { useTraders } from "@/hooks/useTraders";
-import Image from "next/image";
+import { useAnimals } from "@/hooks/useAnimals";
 
 export default function Header() {
-  const { deployedCount: deployed, remainingCount: remaining } = useTraders();
+  const { deployedCount: deployed, remainingCount: remaining } = useAnimals();
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-bg-panel/95 backdrop-blur-md border-b-[3px] border-border-main">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <header className="sticky top-0 z-50 zoo-header">
+      <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center gap-3 group cursor-pointer">
-          <div className="w-10 h-10 border-[3px] border-accent-gold shadow-[3px_3px_0px_rgba(255,217,61,0.3)] overflow-hidden transition-all duration-300 group-hover:shadow-[3px_3px_0px_rgba(255,217,61,0.5)] group-hover:rotate-[-5deg] relative">
-            <Image
-              src="/main.jpg"
-              alt="Logo"
-              fill
-              className="object-cover"
-              sizes="40px"
-            />
+          <div className="w-10 h-10 rounded-xl overflow-hidden transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(48,200,120,0.2)] group-hover:scale-110 group-hover:rotate-[-5deg]">
+            <img src="/icon.jpg" alt="The Animals" className="w-full h-full object-cover" />
           </div>
-          <h1
-            className="text-white text-sm md:text-base tracking-wider transition-all duration-300 group-hover:text-accent-gold"
-            style={{ fontFamily: "var(--font-pixel)" }}
-          >
-            $TRADERS
-          </h1>
+          <div>
+            <h1
+              className="text-text-primary text-lg tracking-[0.12em] uppercase transition-colors duration-300 group-hover:text-accent-gold"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              The Animals
+            </h1>
+          </div>
         </a>
 
         {/* Stats */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="stat-box stat-box-gold pixel-border-gold bg-bg-card px-4 py-2 text-sm cursor-default">
-            <span className="text-accent-gold font-bold" style={{ fontFamily: "var(--font-pixel)" }}>
-              LAUNCHED:{" "}
-            </span>
-            <span className="text-white font-bold text-lg">{deployed}</span>
+          <div className="stat-badge flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-accent-emerald shadow-[0_0_6px_rgba(32,224,112,0.5)]" />
+            <span className="text-text-muted text-[10px] uppercase tracking-widest">Deployed</span>
+            <span className="text-accent-emerald font-bold">{deployed}</span>
           </div>
-          <div className="stat-box stat-box-default pixel-border bg-bg-card px-4 py-2 text-sm cursor-default">
-            <span className="text-text-muted font-bold" style={{ fontFamily: "var(--font-pixel)" }}>
-              REMAINING:{" "}
-            </span>
-            <span className="text-white font-bold text-lg">{remaining}</span>
+          <div className="stat-badge flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-accent-gold/50" />
+            <span className="text-text-muted text-[10px] uppercase tracking-widest">Waiting</span>
+            <span className="text-accent-gold font-bold">{remaining}</span>
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-4 md:gap-6">
-          <button
-            onClick={() => scrollTo("whats-this")}
-            className="nav-link text-text-muted text-sm hidden sm:block"
-          >
-            What&apos;s this?
-          </button>
-          <span className="text-border-main hidden sm:block">|</span>
-          <button
-            onClick={() => scrollTo("traders")}
-            className="nav-link text-text-muted text-sm hidden sm:block"
-          >
-            Traders
-          </button>
-        </div>
+        {/* Nav */}
+        <nav className="flex items-center gap-5">
+          <button onClick={() => scrollTo("about")} className="nav-link text-text-secondary text-sm hidden sm:block">About</button>
+          <button onClick={() => scrollTo("animals")} className="nav-link text-text-secondary text-sm hidden sm:block">Collection</button>
+          <button onClick={() => scrollTo("guide")} className="nav-link text-text-secondary text-sm hidden sm:block">Guide</button>
+        </nav>
       </div>
     </header>
   );

@@ -1,59 +1,57 @@
-import { IconLightning } from "./PixelIcons";
+import { IconChart, IconShield, IconCompass } from "./Icons";
+import Image from "next/image";
 
 export default function OnChainTracking() {
-  const badges = [
-    "Real-time on-chain monitoring",
-    "First deployer gets featured",
-    "$50+ liquidity required",
+  const trackingFeatures = [
+    {
+      icon: <IconCompass />,
+      title: "Auto-Scanning",
+      desc: "Our bots monitor pump.fun in real-time for any new deployments matching our collection.",
+      medallion: "medallion-blue",
+    },
+    {
+      icon: <IconShield />,
+      title: "Verified Ownership",
+      desc: "Once a deployment is found, the deployer's wallet is verified and permanently credited on the exhibit page.",
+      medallion: "medallion-green",
+    },
+    {
+      icon: <IconChart />,
+      title: "Live Analytics",
+      desc: "Track each animal's on-chain performance — market cap, holders, volume — all from the exhibit dashboard.",
+      medallion: "medallion-purple",
+    },
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-10">
-      <div className="relative bg-bg-panel p-10 md:p-14">
-        {/* Corner brackets */}
-        <div className="absolute top-3 left-3 w-6 h-6 border-t-[3px] border-l-[3px] border-accent-gold" />
-        <div className="absolute top-3 right-3 w-6 h-6 border-t-[3px] border-r-[3px] border-accent-gold" />
-        <div className="absolute bottom-3 left-3 w-6 h-6 border-b-[3px] border-l-[3px] border-accent-gold" />
-        <div className="absolute bottom-3 right-3 w-6 h-6 border-b-[3px] border-r-[3px] border-accent-gold" />
-
-        <div className="text-center space-y-6">
-          {/* Icon */}
-          <div className="mx-auto pixel-icon-box !w-14 !h-14">
-            <IconLightning />
+    <section className="max-w-7xl mx-auto px-5 py-10">
+      <div className="aurora-section p-8 md:p-12 border border-accent-cyan/8">
+        <div className="relative text-center mb-10">
+          <div className="ornament mb-4">
+            <span className="text-accent-cyan text-[10px] tracking-[0.35em] uppercase font-semibold">Tracking System</span>
           </div>
-
-          {/* Title */}
           <h3
-            className="text-accent-gold text-xl md:text-2xl font-bold italic"
-            style={{ fontFamily: "var(--font-pixel)" }}
+            className="text-2xl md:text-3xl text-text-primary mb-3"
+            style={{ fontFamily: "var(--font-display)" }}
           >
-            Automatic On-Chain Tracking
+            On-Chain <span className="text-gradient-nature italic">Tracking</span>
           </h3>
-
-          {/* Description */}
-          <div className="text-text-muted text-sm md:text-base max-w-xl mx-auto space-y-1">
-            <p>No need to submit anything manually.</p>
-            <p>
-              We automatically monitor the blockchain and detect who deployed each
-              trader first.
-            </p>
-          </div>
-
-          {/* Badges */}
-          <div className="flex flex-wrap justify-center gap-3 pt-2">
-            {badges.map((badge, i) => (
-              <div
-                key={i}
-                className="step-card bg-accent-green/20 border-[3px] border-accent-green/50 text-accent-green px-5 py-2.5 text-xs md:text-sm font-bold shadow-[3px_3px_0px_rgba(34,197,94,0.15)]"
-                style={{ fontFamily: "var(--font-pixel)" }}
-              >
-                {badge}
-              </div>
-            ))}
-          </div>
+          <p className="text-text-secondary max-w-xl mx-auto leading-relaxed">
+            Fully automated blockchain verification — no manual submissions, zero friction
+          </p>
         </div>
+
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto mb-8">
+          {trackingFeatures.map((f, i) => (
+            <div key={i} className="nature-card p-5 text-center">
+              <div className={`icon-medallion ${f.medallion} mx-auto mb-3`}>{f.icon}</div>
+              <h4 className="text-text-primary font-semibold text-base mb-2">{f.title}</h4>
+              <p className="text-text-secondary text-sm leading-relaxed">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );
 }
-
