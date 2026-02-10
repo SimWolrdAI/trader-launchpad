@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { setTraderDynamic, getTraderDynamic } from "@/lib/redis";
 import { animals } from "@/data/animals";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "traderlaunchpad2026";
@@ -8,11 +9,25 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const animal = animals.find((a) => a.id === parseInt(id));
-  return NextResponse.json({
-    deployed: animal?.deployed ?? false,
-    contractAddress: animal?.contractAddress,
-  });
+  try {
+    const data = await getTraderDynamic(parseInt(id));
+    if (data) {
+      return NextResponse.json(data);
+    }
+    // Fallback to static data
+    const animal = animals.find((a) => a.id === parseInt(id));
+    return NextResponse.json({
+      deployed: animal?.deployed ?? false,
+      contractAddress: animal?.contractAddress,
+    });
+  } catch {
+    // If KV not configured, return static data
+    const animal = animals.find((a) => a.id === parseInt(id));
+    return NextResponse.json({
+      deployed: animal?.deployed ?? false,
+      contractAddress: animal?.contractAddress,
+    });
+  }
 }
 
 export async function POST(
@@ -27,11 +42,18 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Note: Changes won't persist without Redis/database
-  // This is a read-only mode for free hosting
-  return NextResponse.json({
-    success: false,
-    error: "Storage not configured. To enable admin panel, set up Upstash Redis (free tier available).",
-  });
+  try {
+    await setTraderDynamic(parseInt(id), {
+      deployed: body.deployed ?? false,
+      contractAddress: body.contractAddress || undefined,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to update: " + String(error) },
+      { status: 500 }
+    );
+  }
 }
 
